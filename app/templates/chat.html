@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocketIO Chat - Dark Mode</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <style>
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #121212;
+            color: #FFFFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        #chat-container {
+            width: 100%;
+            max-width: 600px;
+            background: #1E1E1E;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 1s ease-in-out;
+            border: 2px solid #4CAF50; /* Çerçeve ekledim */
+        }
+
+        #header {
+            padding: 15px;
+            background: #282828;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: 1.5px;
+            border-bottom: 1px solid #333;
+            text-transform: uppercase;
+            color: #4CAF50; /* Ana renk: Yeşil */
+        }
+
+        #messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #333 #1E1E1E;
+        }
+
+        #messages li {
+            list-style-type: none;
+            background: #333;
+            margin: 10px 0;
+            padding: 10px 15px;
+            border-radius: 10px;
+            line-height: 1.4;
+            animation: slideIn 0.3s ease-out;
+            opacity: 0;
+            transform: translateX(100%);
+        }
+
+        #message-input {
+            display: flex;
+            border-top: 1px solid #333;
+            background: #1E1E1E;
+            padding: 10px;
+        }
+
+        #message-input input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: #1E1E1E;
+            color: #FFFFFF;
+            font-size: 1rem;
+            outline: none;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        #message-input button {
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        #message-input button:hover {
+            background: #45A049;
+        }
+
+        #logout-button {
+            padding: 10px 20px;
+            background: #F44336; /* Kırmızı logout butonu */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background 0.3s ease;
+        }
+
+        #logout-button:hover {
+            background: #D32F2F;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideIn {
+            0% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Scrollbar styles for Webkit browsers */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1E1E1E;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="header">💬 Real-Time Chat</div>
+        <ul id="messages"></ul>
+        <div id="message-input">
+            <input id="myMessage" placeholder="Type a message..." autocomplete="off" />
+            <button onclick="sendMessage()">Send</button>
+            <button id="logout-button" onclick="window.location.href='/logout';">Logout</button> <!-- Logout Butonu -->
+        </div>
+    </div>
+
+    <script>
+        var socket = io();
+
+        // Mesaj gönderme fonksiyonu
+        function sendMessage() {
+            const msg = document.getElementById('myMessage').value;
+            if (msg.trim() !== "") {
+                socket.send(msg);
+                document.getElementById('myMessage').value = '';
+                document.getElementById('myMessage').focus();  // Mesaj gönderildikten sonra tekrar metin kutusuna odaklan
+            }
+        }
+
+        // Mesaj geldiğinde listeye ekleme ve animasyon ekleme
+        socket.on('message', function(msg) {
+            const li = document.createElement('li');
+            li.textContent = msg;
+
+            // Mesajın animasyonla eklenmesini sağla
+            document.getElementById('messages').appendChild(li);
+
+            // Animasyonu tetikle
+            setTimeout(() => {
+                li.style.opacity = 1;
+                li.style.transform = 'translateX(0)';
+            }, 10);
+
+            li.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Enter tuşuna basıldığında mesaj gönderme
+        document.getElementById('myMessage').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();  // Enter'a basıldığında sayfanın yenilenmesini önle
+                sendMessage();
+            }
+        });
+
+        // Sayfa yüklendiğinde metin kutusuna otomatik odaklanma
+        window.onload = function() {
+            document.getElementById('myMessage').focus();
+        };
+    </script>
+</body>
+</html>

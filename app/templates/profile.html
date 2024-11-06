@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - SocketIO Chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .container {
+            background-color: rgba(30, 30, 30, 0.8);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 900px;
+            overflow-y: auto;
+            height: 90vh;
+        }
+
+        h1, h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .search-bar input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            max-width: 600px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            background-color: #333;
+            color: #ffffff;
+        }
+
+        .search-bar button {
+            padding: 10px 20px;
+            background-color: #00f2fe;
+            color: #121212;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .search-bar button:hover {
+            background-color: #ffffff;
+        }
+
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: #333;
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #00f2fe;
+            cursor: pointer;
+        }
+
+        .profile-picture:hover {
+            opacity: 0.8;
+        }
+
+        .user-info {
+            margin-bottom: 20px;
+        }
+
+        .status {
+            font-size: 1.2rem;
+            color: #00f2fe;
+            margin: 10px 0;
+        }
+
+        .bio {
+            font-size: 1rem;
+            color: #b3b3b3;
+        }
+
+        .chat-rooms, .friends-section, .voice-channels {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .chat-room, .friend-card, .voice-channel {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            width: 180px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease;
+        }
+
+        .chat-room:hover, .friend-card:hover, .voice-channel:hover {
+            transform: scale(1.05);
+            background-color: #333;
+        }
+
+        .chat-room h3, .friend-card h3, .voice-channel h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #00f2fe;
+        }
+
+        .join-button, .dm-button, .voice-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #00f2fe;
+            color: #121212;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .join-button:hover, .dm-button:hover, .voice-button:hover {
+            background-color: #ffffff;
+        }
+
+        .links {
+            margin-top: 20px;
+        }
+
+        .links a {
+            color: #00f2fe;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+
+        .links a:hover {
+            color: #ffffff;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            color: #ffffff;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+
+        .modal input[type="file"] {
+            background-color: #333;
+            color: #ffffff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .upload-button {
+            background-color: #00f2fe;
+            color: #121212;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .upload-button:hover {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Arama Alanı -->
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search friends or chat rooms">
+            <button onclick="search()">Search</button>
+        </div>
+
+        <!-- Profil Resmi -->
+        <div class="profile-picture" onclick="openModal()">
+            <span>AB</span>
+        </div>
+
+        <!-- Profil Fotoğrafı Değiştirme Modalı -->
+        <div id="modal" class="modal" onclick="closeModal(event)">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <button class="close-button" onclick="closeModal()">×</button>
+                <h2>Change Profile Picture</h2>
+                <form action="{{ url_for('profile_picture_upload', name = picture_user) }}" method="POST" enctype="multipart/form-data">
+                    <input type="file" name="profilePicture" accept="image/*" required>
+                    <button type="submit" class="upload-button">Upload</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Kullanıcı Bilgisi -->
+        <div class="user-info">
+            <h1>Username</h1>
+            <div class="status">Online</div>
+            <p class="bio">This is the user's bio, where they can share a little about themselves.</p>
+        </div>
+
+        <!-- Sohbet Odaları -->
+        <h2>Chat Rooms</h2>
+        <div class="chat-rooms">
+            {% for room in chat_rooms %}
+            <div class="chat-room">
+                <h3>{{ room.name }}</h3>
+                <p>{{ room.description }}</p>
+                <button class="join-button">Join</button>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Ses Kanalları -->
+        <h2>Voice Channels</h2>
+        <div class="voice-channels">
+            {% for channel in voice_channels %}
+            <div class="voice-channel">
+                <h3>{{ channel.name }}</h3>
+                <button class="voice-button">Join Voice</button>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Arkadaşlar (DM) -->
+        <h2>Friends</h2>
+        <div class="friends-section">
+            {% for friend in friends %}
+            <div class="friend-card">
+                <h3>{{ friend.name }}</h3>
+                <p>{{ 'Online' if friend.is_online else 'Offline' }}</p>
+                <button class="dm-button" onclick="startDM('{{ friend.name }}')">DM</button>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Linkler -->
+        <div class="links">
+            <a href="/settings">Edit Profile</a> | 
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeModal(event) {
+            if (event && event.target.id === 'modal') {
+                document.getElementById('modal').style.display = 'none';
+            }
+        }
+
+        function startDM(friendName) {
+            alert(`Starting DM with ${friendName}`);
+        }
+
+        function search() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            alert(`Searching for: ${searchTerm}`);
+            // Arama işlemi yapılacak kısımlar buraya eklenebilir.
+        }
+    </script>
+</body>
+</html>
