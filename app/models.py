@@ -22,6 +22,7 @@ def login_manager_func(login_manager):
         return None
 
 
+
 class query():
 
     def __init__(self, name, password, email):
