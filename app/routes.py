@@ -64,7 +64,6 @@ def registeration_routing(app, socket, mail, Message):
             
 def users_route(app, socket, profile_picture_upload_folder, sended_picture_upload_folder, allowed_files):
 
-
     @app.route("/profile/<name>")
     @login_required
     def profile(name):
