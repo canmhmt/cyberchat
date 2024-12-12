@@ -1,0 +1,40 @@
+CREATE TABLE zara_links(
+	zara_id SERIAL PRIMARY KEY,
+	zara_link VARCHAR(1000),
+	zara_username VARCHAR(100),
+	CONSTRAINT fk_user
+	FOREIGN KEY (zara_username)
+	REFERENCES users(username)
+);
+
+
+CREATE TABLE users(
+	users_id SERIAL PRIMARY KEY,
+	username VARCHAR(100) UNIQUE,
+	password VARCHAR(100)
+);
+
+
+CREATE TABLE zara_stocks(
+	zara_stock_id SERIAL PRIMARY KEY,
+	zara_stock VARCHAR(1000),
+	zara_id INT,
+	CONSTRAINT fk_zara_url
+	FOREIGN KEY (zara_id)
+	REFERENCES zara_links(zara_id),
+	CONSTRAINT unique_values
+	UNIQUE (zara_stock, zara_id)
+);
+
+SELECT * FROM users;
+SELECT * FROM zara_links;
+SELECT * FROM zara_stocks;
+
+DROP TABLE zara_stocks;
+
+INSERT INTO users(username, password) VALUES ('zeynep', '8246555')
+
+INSERT INTO zara_links(zara_link, zara_username) VALUES ('https://www.zara.com/tr/tr/zw-collection-dokumlu-gomlek-p09479255.html?v1=382674719&utm_campaign=productShare&utm_medium=mobile_sharing_Android&utm_source=red_social_movil', 'zeynep')
+
+
+

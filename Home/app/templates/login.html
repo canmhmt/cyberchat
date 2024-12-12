@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to SocketIO Chat</title>
+    <title>Login</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #121212; /* Koyu arka plan */
+            background-color: #121212;
             color: #ffffff;
             display: flex;
             justify-content: center;
@@ -24,12 +24,8 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .container {
@@ -37,7 +33,6 @@
             padding: 40px;
             border-radius: 10px;
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-            transition: transform 0.3s ease;
         }
 
         h1 {
@@ -57,46 +52,69 @@
             }
         }
 
-        .button-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background-color: #1e1e1e;
+            color: #ffffff;
         }
 
         button {
             padding: 15px 30px;
             border: none;
             border-radius: 5px;
-            background-color: #1e1e1e; /* Koyu buton rengi */
-            color: #00f2fe; /* Buton yazı rengi */
+            background-color: #1e1e1e;
+            color: #00f2fe;
             font-size: 1.2rem;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Buton gölgesi */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
 
         button:hover {
-            background-color: #333; /* Hover durumunda buton rengi */
+            background-color: #333;
             transform: scale(1.05);
+        }
+
+        .error-message {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #ff4c4c;
+        }
+
+        .signup-link {
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #00f2fe;
+            text-decoration: none;
+            display: inline-block;
+            transition: color 0.3s ease;
+        }
+
+        .signup-link:hover {
+            color: #ffffff;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to SocketIO Chat.</h1>
-        <div class="button-container">
-            <button id="loginBtn">Login</button>
-            <button id="signUpBtn">Sign Up</button>
-        </div>
+        <h1>Login</h1>
+        
+        {% if usernot_found %}
+            <p class="error-message">{{ usernot_found }}</p>
+        {% elif wrong_pass %}
+            <p class="error-message">{{ wrong_pass }}</p>
+        {% endif %}
+        
+        <form action="/" method="POST">
+            <input type="text" placeholder="Username" name="usernamelogin" required>
+            <input type="password" placeholder="Password" name="passwordlogin" required>
+            <button type="submit">Login</button>
+        </form>
+        
     </div>
-    <script>
-        document.getElementById("loginBtn").addEventListener("click", function() {
-            window.location.href = "/login";  // Login butonuna tıklandığında /login sayfasına yönlendirir
-        });
-
-        document.getElementById("signUpBtn").addEventListener("click", function() {
-            window.location.href = "/sign";  // Sign Up butonuna tıklandığında /sign sayfasına yönlendirir
-        });
-    </script>
 </body>
 </html>
