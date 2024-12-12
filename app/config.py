@@ -1,9 +1,8 @@
 import psycopg2
 
-
-def connections():
+def db_connection():
     connection = psycopg2.connect(
-        database = "home",
+        dbname = "socketchat",
         user = "postgres",
         password = "8246",
         host = "localhost",

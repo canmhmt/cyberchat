@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - SocketIO Chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212; /* Koyu arka plan */
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .container {
+            background-color: rgba(30, 30, 30, 0.8);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            animation: slideIn 1s ease-in;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background-color: #1e1e1e; /* Koyu giriş alanı rengi */
+            color: #ffffff; /* Giriş alanı yazı rengi */
+        }
+
+        button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            background-color: #1e1e1e; /* Koyu buton rengi */
+            color: #00f2fe; /* Buton yazı rengi */
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Buton gölgesi */
+        }
+
+        button:hover {
+            background-color: #333; /* Hover durumunda buton rengi */
+            transform: scale(1.05);
+        }
+
+        .login-link {
+            margin-top: 20px;
+            color: #00f2fe;
+            text-decoration: none;
+            font-size: 1rem;
+            display: inline-block;
+            transition: color 0.3s ease;
+        }
+
+        .login-link:hover {
+            color: #ffffff; /* Hover durumunda bağlantı rengi */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sign up - SocketIO Chat</h1>
+        <form action="/sign" method="POST">
+            <input type="text" placeholder="Username" name="name" required>
+            <input type="email" placeholder="Mail" name="email" required>
+            <input type="password" placeholder="Password" name="password" required>
+            <button type="submit">Sign up</button>
+        </form>
+        <a class="login-link" href="/login">Already have an account? Log in</a>
+    </div>
+</body>
+</html>
