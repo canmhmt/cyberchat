@@ -1,1 +1,1 @@
-This project is a test project, its not working well right now.
+This is my first project, and while the code might seem a bit amateurish, I wanted to share it nonetheless. Please don’t judge my skills based on this project alone. I’m continuously learning and improving my abilities in software development. Your feedback and suggestions are always welcome:)
